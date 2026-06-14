@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Checkbox, Form, Input, message, Modal, Typography} from "antd";
+import {Button, Card, Form, Input, message, Modal, Typography} from "antd";
 import './Login.css'
 import request from "../common/request";
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
@@ -11,6 +11,11 @@ import {setCurrentUser} from "../service/permission";
 import PromptModal from "../dd/prompt-modal/prompt-modal";
 
 const {Title, Text} = Typography;
+
+export const withoutRememberMe = values => ({
+    ...values,
+    remember: false,
+});
 
 const LoginForm = () => {
 
@@ -48,7 +53,7 @@ const LoginForm = () => {
     }
 
     const login = async (values) => {
-        let result = await request.post('/login', values);
+        let result = await request.post('/login', withoutRememberMe(values));
         if (result['code'] === 1) {
             Modal.destroyAll();
             await afterLoginSuccess(result['data']);
@@ -69,11 +74,12 @@ const LoginForm = () => {
         setInLogin(true);
 
         try {
-            let result = await request.post('/login', params);
+            const loginAccount = withoutRememberMe(params);
+            let result = await request.post('/login', loginAccount);
             if (result.code === 100) {
                 // 进行双因素认证
                 setPrompt(true);
-                setAccount(params);
+                setAccount(loginAccount);
                 return;
             }
             if (result.code !== 1) {
@@ -101,9 +107,6 @@ const LoginForm = () => {
                     </Form.Item>
                     <Form.Item name='password' rules={[{required: true, message: '请输入登录密码！'}]}>
                         <Input.Password prefix={<LockOutlined/>} placeholder="登录密码"/>
-                    </Form.Item>
-                    <Form.Item name='remember' valuePropName='checked' initialValue={false}>
-                        <Checkbox>保持登录</Checkbox>
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button"
