@@ -23,7 +23,7 @@
 - Create: `web/src/utils/utils.test.js`
 - Modify: `web/src/utils/utils.js:8-17`
 
-- [ ] **Step 1: Write the failing token-storage tests**
+- [x] **Step 1: Write the failing token-storage tests**
 
 ```javascript
 import {getHeaders, getToken, setToken} from './utils';
@@ -54,7 +54,7 @@ describe('login token storage', () => {
 });
 ```
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Run:
 
@@ -65,7 +65,7 @@ CI=true npm test -- --runInBand --watchAll=false src/utils/utils.test.js
 
 Expected: FAIL because the current implementation writes and reads `localStorage`.
 
-- [ ] **Step 3: Implement session-only storage**
+- [x] **Step 3: Implement session-only storage**
 
 Replace the token helpers with:
 
@@ -90,7 +90,7 @@ export const getToken = function () {
 Keep `getHeaders()` unchanged so asset and API callers continue using the same
 interface.
 
-- [ ] **Step 4: Run the focused test and verify GREEN**
+- [x] **Step 4: Run the focused test and verify GREEN**
 
 Run:
 
@@ -101,7 +101,7 @@ CI=true npm test -- --runInBand --watchAll=false src/utils/utils.test.js
 
 Expected: PASS, 2 tests.
 
-- [ ] **Step 5: Commit token storage**
+- [x] **Step 5: Commit token storage**
 
 ```bash
 git add web/src/utils/utils.js web/src/utils/utils.test.js
@@ -114,7 +114,7 @@ git commit -m "Use session storage for login tokens"
 - Create: `web/src/components/Login.test.js`
 - Modify: `web/src/components/Login.js:1-110`
 
-- [ ] **Step 1: Write the failing login-form tests**
+- [x] **Step 1: Write the failing login-form tests**
 
 Mock branding and request dependencies, render `LoginForm` in a memory router,
 and submit the username/password fields:
@@ -132,7 +132,7 @@ The test fixture must mock `brandingApi.getBranding()` and return a failed
 login response such as `{code: 0}` so navigation and user-state setup do not
 affect this assertion.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Run:
 
@@ -144,7 +144,7 @@ CI=true npm test -- --runInBand --watchAll=false src/components/Login.test.js
 Expected: FAIL because the checkbox is currently rendered and submitted form
 data does not explicitly force `remember: false`.
 
-- [ ] **Step 3: Implement the minimal login-form change**
+- [x] **Step 3: Implement the minimal login-form change**
 
 Remove `Checkbox` from the Ant Design import and delete the `remember` form
 item. Add a small normalizer:
@@ -159,7 +159,7 @@ const withoutRememberMe = values => ({
 Use `withoutRememberMe(params)` before both the first login request and stored
 TOTP account state. The TOTP retry will therefore also send `remember: false`.
 
-- [ ] **Step 4: Run the focused test and verify GREEN**
+- [x] **Step 4: Run the focused test and verify GREEN**
 
 Run:
 
@@ -170,7 +170,7 @@ CI=true npm test -- --runInBand --watchAll=false src/components/Login.test.js
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit login form**
+- [x] **Step 5: Commit login form**
 
 ```bash
 git add web/src/components/Login.js web/src/components/Login.test.js
@@ -183,7 +183,7 @@ git commit -m "Remove persistent login option"
 - Verify: `web/src`
 - Verify: `server`
 
-- [ ] **Step 1: Run all frontend tests**
+- [x] **Step 1: Run all frontend tests**
 
 ```bash
 cd web
@@ -192,7 +192,7 @@ CI=true npm test -- --runInBand --watchAll=false
 
 Expected: all test suites pass.
 
-- [ ] **Step 2: Build the production frontend**
+- [x] **Step 2: Build the production frontend**
 
 ```bash
 cd web
@@ -202,7 +202,7 @@ npm run build
 Expected: optimized production build succeeds and reports
 `/next-terminal/` as the hosting path.
 
-- [ ] **Step 3: Run Go regression tests**
+- [x] **Step 3: Run Go regression tests**
 
 ```bash
 packages=$(go list ./... | grep -v /server/common/term/test)
@@ -211,7 +211,7 @@ go test $packages
 
 Expected: all included packages pass.
 
-- [ ] **Step 4: Verify asset token call sites remain unchanged**
+- [x] **Step 4: Verify asset token call sites remain unchanged**
 
 ```bash
 git diff --name-only c725d87..HEAD
@@ -220,7 +220,7 @@ rg -n "getToken\\(\\)" web/src/components/access web/src/components/devops web/s
 
 Expected: asset/session components are not modified and still use `getToken()`.
 
-- [ ] **Step 5: Perform runtime browser checks**
+- [x] **Step 5: Perform runtime browser checks**
 
 Build and deploy the branch image on the test host, then verify:
 
@@ -230,6 +230,36 @@ Build and deploy the branch image on the test host, then verify:
 4. Closing the browser session and reopening `/next-terminal/` shows login.
 5. `/` remains 404 and `/next-terminal/` remains 200.
 
-- [ ] **Step 6: Commit any verification-only documentation updates**
+- [x] **Step 6: Commit any verification-only documentation updates**
 
 If no files changed during verification, do not create an empty commit.
+
+### Task 4: Cross-tab Token Propagation Fix
+
+**Files:**
+- Modify: `web/src/utils/utils.js`
+- Modify: `web/src/utils/window.js`
+- Modify: `web/src/components/asset/Asset.js`
+- Modify: `web/src/components/worker/MyAsset.js`
+
+- [x] **Step 1: Add `initTokenFromUrl()` to `utils.js`**
+
+On module load, extract `X-Auth-Token` from URL query/hash parameters, store in
+`sessionStorage`, then remove from URL via `history.replaceState`.
+
+- [x] **Step 2: Update `openTinyWin()` in `window.js`**
+
+Auto-inject the current token as a URL parameter before calling `window.open()`.
+
+- [x] **Step 3: Update asset access links in `Asset.js` and `MyAsset.js`**
+
+Append `&X-Auth-Token=...` to the URL when opening RDP/SSH access in a new tab.
+
+- [x] **Step 4: Build and deploy to test server**
+
+```bash
+rsync -avz --exclude='.git' --exclude='node_modules' ./ root@192.168.1.129:/opt/next-terminal-session-fix/
+ssh root@192.168.1.129 "cd /opt/next-terminal-session-fix && docker compose build && docker compose up -d"
+```
+
+- [x] **Step 5: Verify RDP access works in new tab without forced login**

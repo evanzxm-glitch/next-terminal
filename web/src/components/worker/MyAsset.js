@@ -3,6 +3,7 @@ import {Badge, Select, Tag, Tooltip} from "antd";
 import {ProTable} from "@ant-design/pro-components";
 import {PROTOCOL_COLORS} from "../../common/constants";
 import strings from "../../utils/strings";
+import {getToken} from "../../utils/utils";
 import {useQuery} from "react-query";
 import workAssetApi from "../../api/worker/asset";
 import dayjs from "dayjs";
@@ -153,11 +154,13 @@ const MyAsset = () => {
                 const id = record['id'];
                 const protocol = record['protocol'];
                 const name = record['name'];
+                const token = getToken();
+                const tokenParam = token ? `&X-Auth-Token=${encodeURIComponent(token)}` : '';
                 let url = '';
                 if (protocol === 'ssh') {
-                    url = `#/term?assetId=${id}&assetName=${name}&isWorker=true`;
+                    url = `#/term?assetId=${id}&assetName=${name}&isWorker=true${tokenParam}`;
                 } else {
-                    url = `#/access?assetId=${id}&assetName=${name}&protocol=${protocol}`;
+                    url = `#/access?assetId=${id}&assetName=${name}&protocol=${protocol}${tokenParam}`;
                 }
 
                 return [

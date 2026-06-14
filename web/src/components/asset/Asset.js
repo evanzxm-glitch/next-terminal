@@ -20,6 +20,7 @@ import assetApi from "../../api/asset";
 import tagApi from "../../api/tag";
 import {PROTOCOL_COLORS} from "../../common/constants";
 import strings from "../../utils/strings";
+import {getToken} from "../../utils/utils";
 import AssetModal from "./AssetModal";
 import ColumnState, {useColumnState} from "../../hook/column-state";
 import {useQuery} from "react-query";
@@ -232,11 +233,13 @@ const Asset = () => {
                 const id = record['id'];
                 const protocol = record['protocol'];
                 const name = record['name'];
+                const token = getToken();
+                const tokenParam = token ? `&X-Auth-Token=${encodeURIComponent(token)}` : '';
                 let url = '';
                 if (protocol === 'ssh') {
-                    url = `#/term?assetId=${id}&assetName=${name}`;
+                    url = `#/term?assetId=${id}&assetName=${name}${tokenParam}`;
                 } else {
-                    url = `#/access?assetId=${id}&assetName=${name}&protocol=${protocol}`;
+                    url = `#/access?assetId=${id}&assetName=${name}&protocol=${protocol}${tokenParam}`;
                 }
 
                 return [

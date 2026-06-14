@@ -11,6 +11,30 @@ const removeLegacyToken = function () {
     localStorage.removeItem(TOKEN_KEY);
 }
 
+const initTokenFromUrl = function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+    const token = urlParams.get(TOKEN_KEY) || hashParams.get(TOKEN_KEY);
+    if (token) {
+        sessionStorage.setItem(TOKEN_KEY, token);
+        let hash = window.location.hash;
+        if (hash.includes(TOKEN_KEY + '=')) {
+            hash = hash.replace(new RegExp(`[?&]${TOKEN_KEY}=[^&]*`, 'g'), '');
+            hash = hash.replace(/\?$/, '');
+        }
+        let search = window.location.search;
+        if (search.includes(TOKEN_KEY + '=')) {
+            search = search.replace(new RegExp(`[?&]${TOKEN_KEY}=[^&]*`, 'g'), '');
+            search = search.replace(/^\?/, '');
+            search = search ? '?' + search : '';
+        }
+        const newUrl = window.location.pathname + search + hash;
+        window.history.replaceState(null, '', newUrl);
+    }
+}
+
+initTokenFromUrl();
+
 export const setToken = function (token) {
     removeLegacyToken();
     sessionStorage.setItem(TOKEN_KEY, token);

@@ -32,7 +32,7 @@ x86-64 主机。
 ## 使用 GHCR 镜像部署
 
 ```bash
-git clone https://github.com/evanzxm-glitch/next-terminal.git
+git clone -b codex/session-only-login https://github.com/evanzxm-glitch/next-terminal.git
 cd next-terminal
 docker compose -f docker-compose.subpath.yml pull
 docker compose -f docker-compose.subpath.yml up -d
@@ -81,7 +81,7 @@ NEXT_TERMINAL_PORT=8080
 ## 从源码构建
 
 ```bash
-git clone https://github.com/evanzxm-glitch/next-terminal.git
+git clone -b codex/session-only-login https://github.com/evanzxm-glitch/next-terminal.git
 cd next-terminal
 docker compose -f docker-compose.subpath.yml build
 docker compose -f docker-compose.subpath.yml up -d
@@ -152,3 +152,20 @@ docker compose -f docker-compose.subpath.yml down
 
 确认浏览器访问的是 `/next-terminal/`，且反向代理没有删除该前缀。REST API
 和 WebSocket 也必须保留 `/next-terminal`。
+
+### 为什么没有"保持登录"选项？
+
+本版本（`codex/session-only-login` 分支）移除了"保持登录"功能。登录 Token
+仅存储在浏览器的 `sessionStorage` 中，关闭浏览器后自动失效。这是为了提高
+安全性，避免 Token 在浏览器关闭后仍然有效。
+
+### 关闭浏览器后需要重新登录？
+
+是的，这是预期行为。Token 存储在 `sessionStorage` 中，关闭浏览器后会被
+清除。在同一个浏览器会话中刷新页面不会丢失登录状态。
+
+### 新标签页打开 RDP/SSH 接入时是否需要重新登录？
+
+不需要。本版本已修复此问题：打开新标签页时，系统会自动在 URL 中传递
+Token，新页面加载后自动提取并存入 `sessionStorage`，然后从 URL 中移除，
+确保跨标签页认证正常。

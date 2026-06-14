@@ -1,7 +1,7 @@
-# Next Terminal 1.3.9 Subpath Edition
+# Next Terminal 1.3.9 Session-only Login Edition
 
 这是基于 [dushixiang/next-terminal v1.3.9](https://github.com/dushixiang/next-terminal/tree/v1.3.9)
-修改的部署版本。
+修改的部署版本，分支 `codex/session-only-login`。
 
 主要变化：
 
@@ -9,13 +9,23 @@
 - 通过 `http://服务器IP:8080/next-terminal/` 访问。
 - 根路径 `/` 和未加前缀的 API 返回 HTTP 404。
 - Next Terminal 和 guacd 保持为两个独立容器。
-- 提供 Docker Compose 一键部署及 GHCR 镜像。
+- **移除"保持登录"功能**：登录 Token 仅存储在 `sessionStorage` 中，关闭浏览器后自动失效，需重新登录。
+- **修复新标签页 Token 丢失问题**：RDP/SSH 接入、会话监控、会话回放等通过新标签页打开的功能，会自动在 URL 中传递 Token 并在页面加载后写入 `sessionStorage`，确保跨标签页认证正常。
+
+## 会话登录说明
+
+本版本对登录和认证机制做了以下调整：
+
+1. **移除"保持登录"选项**：登录页面不再显示"保持登录"复选框，所有登录请求均使用非持久化 Token（后端有效期 2 小时）。
+2. **Token 存储在 `sessionStorage`**：关闭浏览器标签页或窗口后，Token 自动清除，下次访问需要重新登录。
+3. **跨标签页 Token 传递**：通过资产管理接入 RDP/SSH、在线会话监控、离线会话回放等功能时，系统会自动在 URL 中附带 Token 参数，新标签页加载后自动提取并存入 `sessionStorage`，随后从 URL 中移除（避免 Token 暴露在地址栏中）。
 
 ## 快速部署
 
 ```bash
-git clone https://github.com/evanzxm-glitch/next-terminal.git
+git clone -b codex/session-only-login https://github.com/evanzxm-glitch/next-terminal.git
 cd next-terminal
+docker compose -f docker-compose.subpath.yml build
 docker compose -f docker-compose.subpath.yml up -d
 ```
 
@@ -47,6 +57,7 @@ ghcr.io/evanzxm-glitch/next-terminal-guacd:1.4.0
 
 - [Docker 容器部署说明](docs/docker-deployment.zh-CN.md)
 - [子路径修改设计](docs/superpowers/specs/2026-06-14-subpath-deployment-design.md)
+- [会话登录设计](docs/superpowers/specs/2026-06-15-session-only-login-design.md)
 
 ## 协议支持
 
