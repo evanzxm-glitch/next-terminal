@@ -32,7 +32,7 @@ x86-64 主机。
 ## 使用 GHCR 镜像部署
 
 ```bash
-git clone -b codex/session-only-login https://github.com/evanzxm-glitch/next-terminal.git
+git clone https://github.com/evanzxm-glitch/next-terminal.git
 cd next-terminal
 docker compose -f docker-compose.subpath.yml pull
 docker compose -f docker-compose.subpath.yml up -d
@@ -81,7 +81,7 @@ NEXT_TERMINAL_PORT=8080
 ## 从源码构建
 
 ```bash
-git clone -b codex/session-only-login https://github.com/evanzxm-glitch/next-terminal.git
+git clone https://github.com/evanzxm-glitch/next-terminal.git
 cd next-terminal
 docker compose -f docker-compose.subpath.yml build
 docker compose -f docker-compose.subpath.yml up -d
@@ -155,7 +155,7 @@ docker compose -f docker-compose.subpath.yml down
 
 ### 为什么没有"保持登录"选项？
 
-本版本（`codex/session-only-login` 分支）移除了"保持登录"功能。登录 Token
+本版本移除了"保持登录"功能。登录 Token
 仅存储在浏览器的 `sessionStorage` 中，关闭浏览器后自动失效。这是为了提高
 安全性，避免 Token 在浏览器关闭后仍然有效。
 

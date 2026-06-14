@@ -1,7 +1,7 @@
-# Next Terminal 1.3.9 Session-only Login Edition
+# Next Terminal 1.3.9
 
 这是基于 [dushixiang/next-terminal v1.3.9](https://github.com/dushixiang/next-terminal/tree/v1.3.9)
-修改的部署版本，分支 `codex/session-only-login`。
+修改的部署版本。
 
 主要变化：
 
@@ -23,7 +23,7 @@
 ## 快速部署
 
 ```bash
-git clone -b codex/session-only-login https://github.com/evanzxm-glitch/next-terminal.git
+git clone https://github.com/evanzxm-glitch/next-terminal.git
 cd next-terminal
 docker compose -f docker-compose.subpath.yml build
 docker compose -f docker-compose.subpath.yml up -d
