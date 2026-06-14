@@ -5,12 +5,20 @@ export const sleep = function (ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+const TOKEN_KEY = 'X-Auth-Token';
+
+const removeLegacyToken = function () {
+    localStorage.removeItem(TOKEN_KEY);
+}
+
 export const setToken = function (token) {
-    localStorage.setItem('X-Auth-Token', token);
+    removeLegacyToken();
+    sessionStorage.setItem(TOKEN_KEY, token);
 }
 
 export const getToken = function () {
-    return localStorage.getItem('X-Auth-Token');
+    removeLegacyToken();
+    return sessionStorage.getItem(TOKEN_KEY);
 }
 
 export const getHeaders = function () {
