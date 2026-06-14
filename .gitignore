@@ -1,0 +1,33 @@
+yarn.lock
+web/build
+web/node_modules/
+server/resource/build/
+next-terminal
+*.log
+*.db
+.DS_Store
+.eslintcache
+.env
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# ignore ide config
+.idea
+.vscode
+
+# vim
+*.swp
+
+
+# next terminal
+/data/
+/logs/
+/server/resource/static/
+/server/resource/*.html
+/server/resource/*.json
+/server/resource/*.ico

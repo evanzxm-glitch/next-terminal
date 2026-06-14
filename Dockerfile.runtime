@@ -1,0 +1,14 @@
+FROM alpine:3.20
+
+ENV TZ=Asia/Shanghai
+
+RUN apk add --no-cache tzdata
+
+WORKDIR /usr/local/next-terminal
+
+COPY next-terminal /usr/local/next-terminal/next-terminal
+COPY LICENSE /usr/local/next-terminal/LICENSE
+
+EXPOSE 8080
+
+ENTRYPOINT ["/usr/local/next-terminal/next-terminal"]
